@@ -1,0 +1,118 @@
+import { NextResponse } from 'next/server';
+import dbConnect from '../../../../../lib/mongodb';
+import Order from '../../../../../models/Order';
+import User from '../../../../../models/User';
+import { verifyToken } from '../../../../../lib/auth';
+import mongoose from 'mongoose';
+
+// GET - Fetch all orders for admin
+export async function GET(request) {
+  try {
+    await dbConnect();
+    
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader) {
+      return NextResponse.json({ error: 'No token provided' }, { status: 401 });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
+
+    // Check if user is admin directly from token
+    if (!decoded.isAdmin) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
+
+    // Fetch all orders with user details
+    const orders = await Order.find({})
+      .populate('userId', 'username phone email')
+      .sort({ createdAt: -1 });
+
+    return NextResponse.json({ orders });
+
+  } catch (error) {
+    console.error('Fetch admin orders error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// PUT - Update order status
+export async function PUT(request) {
+  try {
+    await dbConnect();
+    
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader) {
+      return NextResponse.json({ error: 'No token provided' }, { status: 401 });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
+
+    // Check if user is admin directly from token
+    if (!decoded.isAdmin) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
+
+    const body = await request.json();
+    console.log('Admin orders PUT request body:', body);
+    
+    const { orderId, status } = body;
+
+    if (!orderId || !status) {
+      console.log('Missing orderId or status:', { orderId, status });
+      return NextResponse.json({ error: 'Order ID and status are required' }, { status: 400 });
+    }
+
+    // Valid status values
+    const validStatuses = ['pending', 'approved', 'rejected', 'dispatched'];
+    if (!validStatuses.includes(status)) {
+      console.log('Invalid status:', status);
+      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    }
+
+    console.log('Updating order:', orderId, 'to status:', status);
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      console.log('Invalid ObjectId:', orderId);
+      return NextResponse.json({ error: 'Invalid order ID format' }, { status: 400 });
+    }
+
+    // Update order status
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { 
+        status,
+        approvedBy: decoded.isAdmin ? 'admin' : null,
+        approvedAt: status === 'approved' ? new Date() : null
+      },
+      { new: true }
+    ).populate('userId', 'username phone rank');
+
+    if (!updatedOrder) {
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `Order ${status} successfully`,
+      order: updatedOrder
+    });
+
+  } catch (error) {
+    console.error('Update order status error:', error);
+    console.error('Error stack:', error.stack);
+    return NextResponse.json({ 
+      error: 'Internal server error', 
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    }, { status: 500 });
+  }
+}
