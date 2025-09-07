@@ -143,10 +143,16 @@ export default function Dashboard() {
           setUser(data.user);
           localStorage.setItem('user', JSON.stringify(data.user));
         } else {
-          // Preserve the hasPendingPackage flag if it was set and user doesn't have a package yet
+          // Use the server's hasPendingPackage truth. If previously pending and now cleared without purchase, show rejection message.
+          const serverPending = !!data.user.hasPendingPackage;
+          const previouslyPending = !!hasPendingPackageFlag;
+          if (previouslyPending && !serverPending) {
+            setMessage('Your package request was rejected by admin. You can purchase again.');
+          }
+
           const updatedUser = {
             ...data.user,
-            hasPendingPackage: hasPendingPackageFlag || data.user.hasPendingPackage
+            hasPendingPackage: serverPending
           };
           setUser(updatedUser);
           localStorage.setItem('user', JSON.stringify(updatedUser));
