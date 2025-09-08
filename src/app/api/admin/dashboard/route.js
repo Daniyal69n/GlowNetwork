@@ -52,11 +52,21 @@ export async function GET(request) {
       { $group: { _id: '$rank', count: { $sum: 1 } } }
     ]);
 
+    // Pending incentives (users whose incentives are pending)
+    const pendingIncentives = await User.find({
+      $or: [
+        { 'incentives.umrahTicket.status': 'pending' },
+        { 'incentives.fixedSalary.status': 'pending' },
+        { 'incentives.carPlan.status': 'pending' }
+      ]
+    }).select('username phone rank incentives');
+
     return NextResponse.json({
       pendingApprovals: {
         packages: pendingPackages,
         orders: pendingOrders,
-        payouts: pendingPayouts
+        payouts: pendingPayouts,
+        incentives: pendingIncentives
       },
       approvedOrders,
       statistics: {

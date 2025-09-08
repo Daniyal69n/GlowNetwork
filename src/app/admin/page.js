@@ -79,6 +79,11 @@ export default function AdminDashboard() {
           orderId: id, 
           action: action 
         });
+      } else if (type === 'incentive') {
+        endpoint = `/api/admin/incentives`;
+        // id for incentives is a JSON string we built with userId/key/action for convenience
+        const parsed = typeof id === 'string' ? JSON.parse(id) : id;
+        body = JSON.stringify(parsed);
       } else {
         endpoint = `/api/admin/approve-${type}`;
         body = JSON.stringify({ 
@@ -320,6 +325,47 @@ export default function AdminDashboard() {
                           <FiX size={14} className="hidden md:block" />
                           <span>Reject</span>
                         </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'packages' && dashboardData && (
+          <div className="bg-white rounded-lg shadow p-4 md:p-6 mt-6">
+            <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6">Incentive Approvals</h2>
+            {(!dashboardData.pendingApprovals.incentives || dashboardData.pendingApprovals.incentives.length === 0) ? (
+              <p className="text-gray-600">No pending incentive approvals.</p>
+            ) : (
+              <div className="space-y-4">
+                {dashboardData.pendingApprovals.incentives.map((u) => (
+                  <div key={u._id} className="border rounded-lg p-3 md:p-4">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start">
+                      <div className="mb-3 md:mb-0">
+                        <h3 className="font-semibold">{u.username}</h3>
+                        <p className="text-sm text-gray-600">Phone: {u.phone}</p>
+                        <p className="text-sm text-gray-600">Rank: {u.rank || '-'}</p>
+                        <p className="text-sm text-gray-600">Pending: {['umrahTicket','fixedSalary','carPlan'].filter(k => u.incentives?.[k]?.status === 'pending').join(', ')}</p>
+                      </div>
+                      <div className="flex flex-col space-y-2">
+                        {['umrahTicket','fixedSalary','carPlan'].map((key) => (
+                          u.incentives?.[key]?.status === 'pending' && (
+                            <div key={key} className="flex items-center space-x-2">
+                              <span className="text-sm capitalize w-28">{key}</span>
+                              <button
+                                onClick={() => handleApproval('incentive', JSON.stringify({ userId: u._id, key, action: 'approved' }))}
+                                className="px-3 py-1 rounded bg-green-100 text-green-700 hover:bg-green-200"
+                              >Approve</button>
+                              <button
+                                onClick={() => handleApproval('incentive', JSON.stringify({ userId: u._id, key, action: 'rejected' }))}
+                                className="px-3 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200"
+                              >Reject</button>
+                            </div>
+                          )
+                        ))}
                       </div>
                     </div>
                   </div>

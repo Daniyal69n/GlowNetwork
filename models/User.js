@@ -72,6 +72,17 @@ const UserSchema = new mongoose.Schema({
   hasPendingOrder: {
     type: Boolean,
     default: false
+  },
+  incentives: {
+    umrahTicket: {
+      status: { type: String, enum: ['locked', 'pending', 'approved', 'rejected'], default: 'locked' }
+    },
+    fixedSalary: {
+      status: { type: String, enum: ['locked', 'pending', 'approved', 'rejected'], default: 'locked' }
+    },
+    carPlan: {
+      status: { type: String, enum: ['locked', 'pending', 'approved', 'rejected'], default: 'locked' }
+    }
   }
 }, {
   timestamps: true
