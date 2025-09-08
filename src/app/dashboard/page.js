@@ -159,7 +159,8 @@ export default function Dashboard() {
         }
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      // Prevent dev overlay by logging as a warning instead of an error
+      console.warn('Error fetching user profile:', error);
     }
   };
 
