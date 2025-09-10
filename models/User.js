@@ -73,6 +73,15 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  pendingRank: {
+    type: String,
+    enum: ['Assistant', 'Manager', 'S.Manager', 'D.Manager', 'G.Manager', 'Director', null],
+    default: null
+  },
+  hasPendingRank: {
+    type: Boolean,
+    default: false
+  },
   incentives: {
     umrahTicket: {
       status: { type: String, enum: ['locked', 'pending', 'approved', 'rejected'], default: 'locked' }

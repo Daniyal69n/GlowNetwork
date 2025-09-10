@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '../../../../../lib/mongodb';
 import User from '../../../../../models/User';
 import { verifyToken } from '../../../../../lib/auth';
+import RankApproval from '../../../../../models/RankApproval';
 
 const RANK_REQUIREMENTS = {
   'Assistant': {
@@ -96,26 +97,43 @@ export async function POST(request) {
     
     // Special case: If user is Assistant and has a direct S.Manager referral
     if (user.rank === 'Assistant' && directSManagerCount > 0) {
-      console.log(`User ${user.username} has a direct S.Manager referral, upgrading to S.Manager`);
-      user.rank = 'S.Manager';
-      await user.save();
-      
-      return NextResponse.json({
-        message: `Rank upgraded to S.Manager successfully (direct S.Manager referral)`,
-        newRank: 'S.Manager'
+      const targetRank = 'S.Manager';
+      if (user.hasPendingRank && user.pendingRank === targetRank) {
+        return NextResponse.json({ message: 'Rank approval pending. Waiting for admin approval.', pending: true, targetRank });
+      }
+
+      // Create rank approval request
+      await RankApproval.create({
+        userId: user._id,
+        currentRank: user.rank,
+        targetRank
       });
+
+      user.pendingRank = targetRank;
+      user.hasPendingRank = true;
+      await user.save();
+
+      return NextResponse.json({ message: 'Rank approval requested. Waiting for admin approval.', pending: true, targetRank });
     }
     
     // Special case: If user is Manager and has a direct S.Manager referral
     if (user.rank === 'Manager' && directSManagerCount > 0) {
-      console.log(`User ${user.username} has a direct S.Manager referral, upgrading to S.Manager`);
-      user.rank = 'S.Manager';
-      await user.save();
-      
-      return NextResponse.json({
-        message: `Rank upgraded to S.Manager successfully (direct S.Manager referral)`,
-        newRank: 'S.Manager'
+      const targetRank = 'S.Manager';
+      if (user.hasPendingRank && user.pendingRank === targetRank) {
+        return NextResponse.json({ message: 'Rank approval pending. Waiting for admin approval.', pending: true, targetRank });
+      }
+
+      await RankApproval.create({
+        userId: user._id,
+        currentRank: user.rank,
+        targetRank
       });
+
+      user.pendingRank = targetRank;
+      user.hasPendingRank = true;
+      await user.save();
+
+      return NextResponse.json({ message: 'Rank approval requested. Waiting for admin approval.', pending: true, targetRank });
     }
     
     // Check if direct referral value meets requirement for rank upgrade
@@ -158,19 +176,23 @@ export async function POST(request) {
     // We've already handled the special case for Assistant with direct S.Manager referrals above
     // No need to check the entire downline anymore, as we're only considering direct referrals
 
-    // Upgrade rank
-    user.rank = rankConfig.next;
-    await user.save();
-
-    // Check if this user was upgraded to any higher rank, check if their referrer should also be upgraded
-    if (user.referredBy) {
-      await checkAndUpgradeReferrer(user.referredBy);
+    // Create pending rank approval instead of immediate upgrade
+    const targetRank = rankConfig.next;
+    if (user.hasPendingRank && user.pendingRank === targetRank) {
+      return NextResponse.json({ message: 'Rank approval pending. Waiting for admin approval.', pending: true, targetRank });
     }
 
-    return NextResponse.json({
-      message: `Rank upgraded to ${rankConfig.next} successfully`,
-      newRank: rankConfig.next
+    await RankApproval.create({
+      userId: user._id,
+      currentRank: user.rank,
+      targetRank
     });
+
+    user.pendingRank = targetRank;
+    user.hasPendingRank = true;
+    await user.save();
+
+    return NextResponse.json({ message: 'Rank approval requested. Waiting for admin approval.', pending: true, targetRank });
 
   } catch (error) {
     console.error('Rank upgrade error:', error);

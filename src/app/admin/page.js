@@ -116,6 +116,33 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleRankAdminAction = async (approvalId, action) => {
+    setLoading(true);
+    setMessage('');
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/admin/approve-rank', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ approvalId, action })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessage(data.message);
+        fetchDashboardData();
+      } else {
+        setMessage(data.error || 'Failed to process rank approval');
+      }
+    } catch (e) {
+      setMessage('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Product management removed - products are now hardcoded in user dashboard
 
   const handleLogout = () => {
@@ -195,7 +222,8 @@ export default function AdminDashboard() {
             { id: 'overview', label: 'Overview', icon: FiUsers },
             { id: 'packages', label: 'Package Approvals', icon: FiPackage },
             { id: 'orders', label: 'Order Approvals', icon: FiShoppingBag },
-            { id: 'payouts', label: 'Payout Approvals', icon: FiDollarSign }
+            { id: 'payouts', label: 'Payout Approvals', icon: FiDollarSign },
+            { id: 'ranks', label: 'Rank Approvals', icon: FiUsers }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -218,7 +246,8 @@ export default function AdminDashboard() {
             { id: 'overview', label: 'Overview', icon: FiUsers },
             { id: 'packages', label: 'Packages', icon: FiPackage },
             { id: 'orders', label: 'Orders', icon: FiShoppingBag },
-            { id: 'payouts', label: 'Payouts', icon: FiDollarSign }
+            { id: 'payouts', label: 'Payouts', icon: FiDollarSign },
+            { id: 'ranks', label: 'Ranks', icon: FiUsers }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -319,6 +348,53 @@ export default function AdminDashboard() {
                         </button>
                         <button
                           onClick={() => handleApproval('package', transaction._id, 'rejected')}
+                          disabled={loading}
+                          className="flex items-center justify-center space-x-1 bg-red-600 text-white px-3 py-2 md:py-1 rounded hover:bg-red-700 disabled:opacity-50 flex-1 md:flex-initial"
+                        >
+                          <FiX size={14} className="hidden md:block" />
+                          <span>Reject</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'ranks' && (
+          <div className="bg-white rounded-lg shadow p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6">Rank Approvals</h2>
+            {(!dashboardData.pendingApprovals.rankApprovals || dashboardData.pendingApprovals.rankApprovals.length === 0) ? (
+              <p className="text-gray-600">No pending rank approvals.</p>
+            ) : (
+              <div className="space-y-4">
+                {dashboardData.pendingApprovals.rankApprovals.map((req) => (
+                  <div key={req._id} className="border rounded-lg p-3 md:p-4">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start">
+                      <div className="mb-3 md:mb-0">
+                        <h3 className="font-semibold">{req.userId.username}</h3>
+                        <p className="text-sm text-gray-600">Phone: {req.userId.phone}</p>
+                        <p className="text-sm text-gray-600">Current Rank: {req.currentRank || '-'}</p>
+                        <p className="text-sm text-gray-600">Target Rank: {req.targetRank}</p>
+                        <p className="text-xs text-gray-500">Requested: {new Date(req.createdAt).toLocaleString()}</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={async () => {
+                            await handleRankAdminAction(req._id, 'approved');
+                          }}
+                          disabled={loading}
+                          className="flex items-center justify-center space-x-1 bg-green-600 text-white px-3 py-2 md:py-1 rounded hover:bg-green-700 disabled:opacity-50 flex-1 md:flex-initial"
+                        >
+                          <FiCheck size={14} className="hidden md:block" />
+                          <span>Approve</span>
+                        </button>
+                        <button
+                          onClick={async () => {
+                            await handleRankAdminAction(req._id, 'rejected');
+                          }}
                           disabled={loading}
                           className="flex items-center justify-center space-x-1 bg-red-600 text-white px-3 py-2 md:py-1 rounded hover:bg-red-700 disabled:opacity-50 flex-1 md:flex-initial"
                         >

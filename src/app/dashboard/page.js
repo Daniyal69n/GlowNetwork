@@ -285,9 +285,20 @@ export default function Dashboard() {
       const data = await response.json();
       
       if (response.ok) {
+        // Pending rank approval flow
+        if (data.pending) {
+          if (!silent) setMessage('Rank approval requested. Waiting for admin approval.');
+          const updatedUser = { ...user, pendingRank: data.targetRank, hasPendingRank: true };
+          setUser(updatedUser);
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          // No immediate refresh needed, but fetch profile to sync
+          fetchUserProfile();
+          return true;
+        }
+
         if (!silent) setMessage(`Congratulations! ${data.message}`);
-        // Update user data
-        const updatedUser = { ...user, rank: data.newRank };
+        // Update user data (immediate upgrade case)
+        const updatedUser = { ...user, rank: data.newRank, pendingRank: null, hasPendingRank: false };
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
         // Refresh team stats and user profile
@@ -1025,6 +1036,11 @@ export default function Dashboard() {
                 <span className="text-gray-700">Current Rank</span>
                 <span className="font-semibold text-blue-600">{user.rank || 'No Plan'}</span>
               </div>
+              {user.hasPendingRank && user.pendingRank && (
+                <div className="mt-2 p-3 rounded-lg bg-yellow-50 text-yellow-700 text-sm">
+                  Rank upgrade to {user.pendingRank} is pending admin approval.
+                </div>
+              )}
               <div className="flex justify-between items-center">
                 <span className="text-gray-700">Investment Plan</span>
                 <span className="font-semibold text-blue-600">

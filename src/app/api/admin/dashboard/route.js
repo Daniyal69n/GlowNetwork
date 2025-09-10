@@ -4,6 +4,7 @@ import User from '../../../../../models/User';
 import Transaction from '../../../../../models/Transaction';
 import Order from '../../../../../models/Order';
 import Payout from '../../../../../models/Payout';
+import RankApproval from '../../../../../models/RankApproval';
 import { verifyToken } from '../../../../../lib/auth';
 
 export async function GET(request) {
@@ -40,6 +41,10 @@ export async function GET(request) {
       .populate('sourceUserId', 'username phone')
       .sort({ createdAt: -1 });
 
+    const pendingRankApprovals = await RankApproval.find({ status: 'pending' })
+      .populate('userId', 'username phone rank')
+      .sort({ createdAt: -1 });
+
     // Get statistics
     const totalUsers = await User.countDocuments({ isAdmin: { $ne: true } });
     const totalRevenue = await Transaction.aggregate([
@@ -66,7 +71,8 @@ export async function GET(request) {
         packages: pendingPackages,
         orders: pendingOrders,
         payouts: pendingPayouts,
-        incentives: pendingIncentives
+        incentives: pendingIncentives,
+        rankApprovals: pendingRankApprovals
       },
       approvedOrders,
       statistics: {
