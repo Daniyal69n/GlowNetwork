@@ -1305,7 +1305,9 @@ export default function Dashboard() {
                 {/* Umrah Ticket - unlocks at Global Manager */}
                 <div className="border rounded-xl p-5">
                   <div className="font-semibold">Umrah Ticket</div>
-                  <div className="text-sm text-gray-600 mb-3">Unlocks at Global Manager</div>
+                  {user && user.rank === 'G.Manager' && (
+                    <div className="text-sm text-gray-600 mb-3">Unlocks at Global Manager</div>
+                  )}
                   {user && user.rank === 'G.Manager' ? (
                     user.incentives?.umrahTicket?.status === 'approved' ? (
                       <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium">Approved</div>
@@ -1320,7 +1322,9 @@ export default function Dashboard() {
                 {/* Fixed Salary - unlocks at Director */}
                 <div className="border rounded-xl p-5">
                   <div className="font-semibold">Fixed Salary</div>
-                  <div className="text-sm text-gray-600 mb-3">Unlocks at Director</div>
+                  {user && user.rank === 'Director' && (
+                    <div className="text-sm text-gray-600 mb-3">Unlocks at Director</div>
+                  )}
                   {user && user.rank === 'Director' ? (
                     user.incentives?.fixedSalary?.status === 'approved' ? (
                       <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium">Approved</div>
@@ -1335,7 +1339,9 @@ export default function Dashboard() {
                 {/* Car Plan - Director with 2 Directors in downlink */}
                 <div className="border rounded-xl p-5">
                   <div className="font-semibold">Car Plan</div>
-                  <div className="text-sm text-gray-600 mb-3">Director + 2 Directors in downlink</div>
+                  {user && user.rank === 'Director' && teamStats && teamStats.directorCount >= 2 && (
+                    <div className="text-sm text-gray-600 mb-3">Director + 2 Directors in downlink</div>
+                  )}
                   {user && user.rank === 'Director' && teamStats && teamStats.directorCount >= 2 ? (
                     user.incentives?.carPlan?.status === 'approved' ? (
                       <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium">Approved</div>
