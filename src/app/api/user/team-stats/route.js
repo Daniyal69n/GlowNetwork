@@ -23,13 +23,46 @@ export async function GET(request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Get team statistics
+    // Get team statistics (entire downline)
     const teamStats = await getTeamStats(user.referralCode);
 
-    // Get direct referrals count (only those with approved packages)
+    // Get direct referrals count and stats (only those with approved packages)
     const directReferrals = await User.find({ 
       referredBy: user.referralCode,
       packagePurchased: { $exists: true, $ne: null }
+    });
+    
+    // Count direct referrals by rank
+    const directStats = {
+      assistantCount: 0,
+      managerCount: 0,
+      sManagerCount: 0,
+      dManagerCount: 0,
+      gManagerCount: 0,
+      directorCount: 0
+    };
+    
+    directReferrals.forEach(member => {
+      switch (member.rank) {
+        case 'Assistant':
+          directStats.assistantCount++;
+          break;
+        case 'Manager':
+          directStats.managerCount++;
+          break;
+        case 'S.Manager':
+          directStats.sManagerCount++;
+          break;
+        case 'D.Manager':
+          directStats.dManagerCount++;
+          break;
+        case 'G.Manager':
+          directStats.gManagerCount++;
+          break;
+        case 'Director':
+          directStats.directorCount++;
+          break;
+      }
     });
     
     return NextResponse.json({
@@ -37,12 +70,20 @@ export async function GET(request) {
       teamSize: teamStats.totalMembers,
       teamVolume: user.totalReferralValue || 0,
       totalTeamMembers: teamStats.totalMembers,
+      // Entire team counts (for display purposes)
       assistantCount: teamStats.assistantCount,
       managerCount: teamStats.managerCount,
       sManagerCount: teamStats.sManagerCount,
       dManagerCount: teamStats.dManagerCount,
       gManagerCount: teamStats.gManagerCount,
-      directorCount: teamStats.directorCount
+      directorCount: teamStats.directorCount,
+      // Direct referral counts (for rank progress calculation)
+      directAssistantCount: directStats.assistantCount,
+      directManagerCount: directStats.managerCount,
+      directSManagerCount: directStats.sManagerCount,
+      directDManagerCount: directStats.dManagerCount,
+      directGManagerCount: directStats.gManagerCount,
+      directDirectorCount: directStats.directorCount
     });
 
   } catch (error) {

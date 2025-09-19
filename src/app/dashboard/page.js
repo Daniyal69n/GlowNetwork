@@ -540,13 +540,13 @@ export default function Dashboard() {
   const getRankProgress = (user) => {
     if (!user.rank) return 0;
     
-    // Define rank requirements
+    // Define rank requirements (DIRECT REFERRALS ONLY)
     const requirements = {
       'Assistant': { referralValue: 50000 }, // To Manager
       'Manager': { referralValue: 100000 }, // To S.Manager
-      'S.Manager': { teamCount: 5, teamRank: 'S.Manager' }, // To D.Manager: 5 S.Managers in downline
-      'D.Manager': { teamCount: 5, teamRank: 'D.Manager' }, // To G.Manager: 5 D.Managers in downline
-      'G.Manager': { teamCount: 4, teamRank: 'G.Manager' } // To Director: 4 G.Managers in downline
+      'S.Manager': { teamCount: 5, teamRank: 'S.Manager' }, // To D.Manager: 5 DIRECT S.Managers
+      'D.Manager': { teamCount: 5, teamRank: 'D.Manager' }, // To G.Manager: 5 DIRECT D.Managers
+      'G.Manager': { teamCount: 4, teamRank: 'G.Manager' } // To Director: 4 DIRECT G.Managers
     };
     
     if (user.rank === 'Director') return 100;
@@ -554,21 +554,22 @@ export default function Dashboard() {
     const req = requirements[user.rank];
     if (!req) return 0;
     
-    // Calculate progress based on referral value (for Assistant/Manager) or team count (for higher ranks)
+    // Calculate progress based on referral value (for Assistant/Manager) or direct team count (for higher ranks)
     let valueProgress = 0;
     if (req.referralValue) {
-      valueProgress = Math.min(100, ((user.referralValue || 0) / req.referralValue) * 100);
+      // Use totalReferralValue instead of referralValue
+      valueProgress = Math.min(100, ((user.totalReferralValue || 0) / req.referralValue) * 100);
     }
     
-    // If this rank requires team members
+    // If this rank requires direct team members
     if (req.teamCount && teamStats) {
-      const teamCount = user.rank === 'S.Manager' 
-        ? (teamStats.sManagerCount || 0)
+      const directTeamCount = user.rank === 'S.Manager' 
+        ? (teamStats.directSManagerCount || 0)  // Direct S.Managers only
         : user.rank === 'D.Manager'
-          ? (teamStats.dManagerCount || 0)
-          : (teamStats.gManagerCount || 0);
+          ? (teamStats.directDManagerCount || 0)  // Direct D.Managers only
+          : (teamStats.directGManagerCount || 0); // Direct G.Managers only
       
-      const teamProgress = Math.min(100, (teamCount / req.teamCount) * 100);
+      const teamProgress = Math.min(100, (directTeamCount / req.teamCount) * 100);
       return Math.floor(teamProgress);
     }
     

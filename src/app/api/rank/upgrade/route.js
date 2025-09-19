@@ -154,21 +154,21 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    // Check team requirement for higher ranks
+    // Check team requirement for higher ranks (DIRECT REFERRALS ONLY)
     if (rankConfig.teamRequirement) {
-      const teamCount = await countTeamMembers(user._id, rankConfig.teamRequirement.rank);
+      const directTeamCount = await countDirectTeamMembers(user.referralCode, rankConfig.teamRequirement.rank);
       console.log(`Rank upgrade check for ${user.username}:`, {
         currentRank: user.rank,
         targetRank: rankConfig.next,
         requiredTeamRank: rankConfig.teamRequirement.rank,
         requiredCount: rankConfig.teamRequirement.count,
-        actualCount: teamCount,
+        actualDirectCount: directTeamCount,
         userReferralCode: user.referralCode
       });
       
-      if (teamCount < rankConfig.teamRequirement.count) {
+      if (directTeamCount < rankConfig.teamRequirement.count) {
         return NextResponse.json({
-          error: `Insufficient team members. Required: ${rankConfig.teamRequirement.count} ${rankConfig.teamRequirement.rank}s, Current: ${teamCount}`
+          error: `Insufficient direct team members. Required: ${rankConfig.teamRequirement.count} direct ${rankConfig.teamRequirement.rank}s, Current: ${directTeamCount}`
         }, { status: 400 });
       }
     }
@@ -271,6 +271,30 @@ async function checkAndUpgradeReferrer(referralCode) {
   }
 }
 
+// New function to count ONLY direct referrals with specific rank
+async function countDirectTeamMembers(referralCode, targetRank) {
+  try {
+    // Get ONLY direct referrals with the target rank
+    const directReferrals = await User.find({ 
+      referredBy: referralCode,
+      rank: targetRank,
+      packagePurchased: { $exists: true, $ne: null }
+    });
+    
+    console.log(`Direct team analysis for referral code ${referralCode}:`, {
+      targetRank,
+      directTargetRankCount: directReferrals.length,
+      directMembers: directReferrals.map(m => ({ username: m.username, rank: m.rank }))
+    });
+    
+    return directReferrals.length;
+  } catch (error) {
+    console.error('Error counting direct team members:', error);
+    return 0;
+  }
+}
+
+// Keep old function for backward compatibility (if needed elsewhere)
 async function countTeamMembers(userId, targetRank) {
   try {
     // Get all users referred by this user (direct and indirect)
