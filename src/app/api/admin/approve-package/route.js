@@ -126,6 +126,15 @@ export async function POST(request) {
 
 async function processPassiveIncome(referrer, packageAmount, transactionId, sourceUserId) {
   try {
+    // Get the user who made the purchase to check their rank
+    const purchaser = await User.findById(sourceUserId);
+    
+    // If the purchaser is Assistant rank, NO passive income is distributed to upline
+    if (purchaser && purchaser.rank === 'Assistant') {
+      console.log('No passive income distributed - purchaser is Assistant rank');
+      return;
+    }
+    
     // Find referrer's upline chain
     let currentUser = referrer;
     let uplineLevel = 1; // This tracks the position in the upline chain
