@@ -1102,7 +1102,7 @@ export default function Dashboard() {
               onClick={() => setActiveTab('shop')} 
               className={`flex items-center justify-center py-4 px-6 flex-1 font-medium relative ${activeTab === 'shop' ? 'text-purple-600' : 'text-gray-700 hover:text-purple-600'}`}
             >
-              <FiShoppingBag size={18} className="mr-2" />
+              <MdOutlineShoppingCart size={18} className="mr-2" />
               Shop
               {activeTab === 'shop' && (
                 <span className="absolute bottom-0 left-0 right-0 h-1 bg-purple-500"></span>
@@ -1586,7 +1586,7 @@ export default function Dashboard() {
                   ) : (
                     products.map((product) => (
                       <div key={product._id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                        <div className="h-48 bg-purple-50 flex items-center justify-center overflow-hidden">
+                        <div className="h-[28rem] bg-purple-50 flex items-center justify-center overflow-hidden">
                           {/* Product image */}
                           <Image
                             src={product.image}
