@@ -23,70 +23,146 @@ export default function Dashboard() {
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [payouts, setPayouts] = useState([]);
-  // Hardcoded products instead of fetching from API
+  const [userIncentives, setUserIncentives] = useState([]);
+  const [incentiveLoading, setIncentiveLoading] = useState(false);
+  // Updated products with new information and images
   const [products] = useState([
     {
-      _id: 'p1',
-      name: 'Premium Face Cream',
-      description: 'Luxury anti-aging face cream with natural ingredients for radiant skin.',
-      price: 19000,
-      image: '/products/p1.webp'
+      _id: 'product1',
+      name: 'Whitening Cream',
+      description: 'Give your skin a natural glow with our premium whitening cream.',
+      price: 4500,
+      image: '/products/product1.png',
+      benefits: [
+        'Give your skin a natural Glow',
+        'Fair Color',
+        'Reduces Acne',
+        'Minimizes Wrinkles',
+        'Removes Freckles',
+        'Remove Dark circles'
+      ]
     },
     {
-      _id: 'p2',
-      name: 'Hydrating Serum',
-      description: 'Deep hydration serum with hyaluronic acid for all skin types.',
-      price: 1500,
-      image: '/products/p2.webp'
+      _id: 'product2',
+      name: 'Creamy Face Wash',
+      description: 'Gentle face wash that smoothes and repairs your skin.',
+      price: 3500,
+      image: '/products/product2.png',
+      benefits: [
+        'Smoothes & repair the skin',
+        'Lighten skin',
+        'Brighten the skin',
+        'Prevent skin aging',
+        'Improve the skin texture'
+      ]
     },
     {
-      _id: 'p3',
-      name: 'Vitamin C Brightening Mask',
-      description: 'Brightening face mask with Vitamin C to reduce dark spots and even skin tone.',
-      price: 1000,
-      image: '/products/p3.webp'
+      _id: 'product3',
+      name: 'Hair Fall Shampoo',
+      description: 'Professional hair care shampoo for healthy, strong hair.',
+      price: 4500,
+      image: '/products/product3.png',
+      benefits: [
+        'For Hair Growth',
+        'For silky hair',
+        'For healthy Hair',
+        'Anti Hair fall',
+        'Anti Hair loss',
+        'Strength weak Hair',
+        'Repair damage Hair'
+      ]
     },
     {
-      _id: 'p4',
-      name: 'Collagen Booster',
-      description: 'Advanced collagen supplement for youthful skin and hair health.',
-      price: 3000,
-      image: '/products/p4.webp'
+      _id: 'product4',
+      name: 'Creamy Sunblock',
+      description: 'Protective sunblock that soothes and repairs your skin.',
+      price: 3500,
+      image: '/products/product4.png',
+      benefits: [
+        'Soothes & Repairs the skin',
+        'Lighten skin',
+        'Brighten the skin',
+        'Prevent skin aging',
+        'Improve the skin texture'
+      ]
     },
     {
-      _id: 'p5',
-      name: 'Detox Tea Set',
-      description: 'Organic herbal tea blend to cleanse and rejuvenate your body.',
-      price: 1000,
-      image: '/products/p5.webp'
+      _id: 'product5',
+      name: 'Anti Acne Face Wash',
+      description: 'Specialized face wash for acne-prone skin.',
+      price: 4000,
+      image: '/products/product5.png',
+      benefits: [
+        'Soothes & Repairs the skin',
+        'Lighten skin',
+        'Brighten the skin',
+        'Prevent skin aging',
+        'Improve the skin texture'
+      ]
     },
     {
-      _id: 'p6',
-      name: 'Aloe Vera Gel',
-      description: 'Pure aloe vera gel for skin soothing and healing properties.',
-      price: 500,
-      image: '/products/p6.webp'
+      _id: 'product6',
+      name: 'Vitamin C Serum',
+      description: 'Powerful vitamin C serum for instant skin brightening.',
+      price: 4000,
+      image: '/products/product6.png',
+      benefits: [
+        'Skin Instant Bright',
+        'Reduce pigmentation',
+        'Anti aging brighten',
+        'Improve skin Elasticity',
+        'Reduces acne',
+        'Minimizes wrinkles',
+        'Removes Freckles',
+        'Remove Dark circles'
+      ]
     },
     {
-      _id: 'p7',
-      name: 'Hair Growth Oil',
-      description: 'Natural oil blend to promote hair growth and reduce hair fall.',
-      price: 1500,
-      image: '/products/p7.webp'
+      _id: 'product7',
+      name: 'Anti Acne Serum',
+      description: 'Advanced serum that tightens skin and reduces acne.',
+      price: 4500,
+      image: '/products/product7.png',
+      benefits: [
+        'Tightens Skin',
+        'Remove Dark circles',
+        'Reduces wrinkles',
+        'Treats acne',
+        'Removes freckles',
+        'Minimize the appearance of enlarged pores & improve skin'
+      ]
     },
     {
-      _id: 'p8',
-      name: 'Body Scrub',
-      description: 'Exfoliating body scrub with natural ingredients for smooth skin.',
-      price: 1000,
-      image: '/products/p8.webp'
+      _id: 'product8',
+      name: 'Herbal Hair Shampoo',
+      description: 'Natural herbal shampoo for comprehensive hair care.',
+      price: 4000,
+      image: '/products/product8.png',
+      benefits: [
+        'For Hair Growth',
+        'For silky hair',
+        'For healthy Hair',
+        'Anti Hair fall',
+        'Anti Hair loss',
+        'Strength weak Hair',
+        'Repair damage Hair'
+      ]
     },
     {
-      _id: 'p9',
-      name: 'Lip Care Kit',
-      description: 'Complete lip care kit with scrub, balm and overnight treatment.',
-      price: 500,
-      image: '/products/p9.webp'
+      _id: 'product9',
+      name: 'Skin Polish',
+      description: 'Gentle skin polish for a smoother, glowing complexion.',
+      price: 4500,
+      image: '/products/product9.png',
+      benefits: [
+        'Gently removes dead skin cells',
+        'Tighten large open pores',
+        'Enhances skin tone & texture',
+        'Control excess oil & give shine',
+        'Brighten dull, tired skin',
+        'Prepares skin for better absorption of skincare',
+        'Promotes a smoother, glowing complexion'
+      ]
     }
   ]);
   const [orders, setOrders] = useState([]);
@@ -113,11 +189,13 @@ export default function Dashboard() {
     fetchOrders();
     fetchTeamStats();
     fetchPayouts();
+    fetchUserIncentives();
     
     // Set up polling for real-time updates
     const pollingInterval = setInterval(() => {
       fetchUserProfile();
       fetchPayouts();
+      fetchUserIncentives();
     }, 5000); // Poll every 5 seconds
     
     return () => clearInterval(pollingInterval); // Clean up on unmount
@@ -230,6 +308,24 @@ export default function Dashboard() {
     }
   };
 
+  const fetchUserIncentives = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/incentives/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserIncentives(data.incentives || []);
+      }
+    } catch (error) {
+      console.error('Error fetching user incentives:', error);
+    }
+  };
+
   const handlePackagePurchase = async (packageAmount) => {
     // Check if user already has a package or a pending package request
     if (user.packagePurchased) {
@@ -266,6 +362,36 @@ export default function Dashboard() {
       setMessage('Network error. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleIncentiveApplication = async (incentiveType) => {
+    setIncentiveLoading(true);
+    setMessage('');
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/incentives/apply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ incentiveType })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage(`${incentiveType} application submitted successfully!`);
+        fetchUserIncentives(); // Refresh incentives
+      } else {
+        setMessage(data.error || 'Failed to submit application');
+      }
+    } catch (error) {
+      setMessage('Network error. Please try again.');
+    } finally {
+      setIncentiveLoading(false);
     }
   };
 
@@ -1300,60 +1426,121 @@ export default function Dashboard() {
           <div className="bg-white rounded-2xl shadow-md overflow-hidden mt-6">
             <div className="p-6">
               <h3 className="text-xl font-semibold mb-1">Incentives</h3>
-              <p className="text-gray-600 mb-6">Unlock special incentives as you grow.</p>
+              <p className="text-gray-600 mb-6">Apply for special incentives based on your rank and achievements.</p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Umrah Ticket - unlocks at Global Manager */}
-                <div className="border rounded-xl p-5">
-                  <div className="font-semibold">Umrah Ticket</div>
-                  {user && user.rank === 'G.Manager' && (
-                    <div className="text-sm text-gray-600 mb-3">Unlocks at Global Manager</div>
-                  )}
-                  {user && user.rank === 'G.Manager' ? (
-                    user.incentives?.umrahTicket?.status === 'approved' ? (
-                      <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium">Approved</div>
+                {/* Umrah Ticket - Global Manager only */}
+                {user && user.rank === 'G.Manager' && (
+                  <div className="border rounded-xl p-5">
+                    <div className="font-semibold mb-2">Umrah Ticket</div>
+                    <div className="text-sm text-gray-600 mb-3">Available for Global Managers (One-time)</div>
+                    {userIncentives.find(inc => inc.type === 'umrahTicket' && inc.status === 'approved') ? (
+                      <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium mb-3">Approved ✓</div>
+                    ) : userIncentives.find(inc => inc.type === 'umrahTicket' && inc.status === 'pending') ? (
+                      <div className="inline-block bg-yellow-50 rounded-full px-4 py-2 text-yellow-700 text-sm font-medium mb-3">Pending Approval</div>
                     ) : (
-                      <div className="inline-block bg-yellow-50 rounded-full px-4 py-2 text-yellow-700 text-sm font-medium">Unlocked — Waiting for Admin Approval</div>
-                    )
-                  ) : (
-                    <div className="inline-block bg-gray-100 rounded-full px-4 py-2 text-gray-600 text-sm">Locked</div>
-                  )}
-                </div>
+                      <button
+                        onClick={() => handleIncentiveApplication('umrahTicket')}
+                        disabled={incentiveLoading}
+                        className="w-full px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:opacity-90 disabled:opacity-50 text-sm font-medium"
+                      >
+                        {incentiveLoading ? 'Applying...' : 'Apply Now'}
+                      </button>
+                    )}
+                  </div>
+                )}
 
-                {/* Fixed Salary - unlocks at Director */}
-                <div className="border rounded-xl p-5">
-                  <div className="font-semibold">Fixed Salary</div>
-                  {user && user.rank === 'Director' && (
-                    <div className="text-sm text-gray-600 mb-3">Unlocks at Director</div>
-                  )}
-                  {user && user.rank === 'Director' ? (
-                    user.incentives?.fixedSalary?.status === 'approved' ? (
-                      <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium">Approved</div>
+                {/* Car Plan - Director with 2 direct Directors */}
+                {user && user.rank === 'Director' && (
+                  <div className="border rounded-xl p-5">
+                    <div className="font-semibold mb-2">Car Plan</div>
+                    <div className="text-sm text-gray-600 mb-3">Requires 2 direct Directors (One-time)</div>
+                    {userIncentives.find(inc => inc.type === 'carPlan' && inc.status === 'approved') ? (
+                      <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium mb-3">Approved ✓</div>
+                    ) : userIncentives.find(inc => inc.type === 'carPlan' && inc.status === 'pending') ? (
+                      <div className="inline-block bg-yellow-50 rounded-full px-4 py-2 text-yellow-700 text-sm font-medium mb-3">Pending Approval</div>
+                    ) : teamStats && teamStats.directDirectorCount >= 2 ? (
+                      <button
+                        onClick={() => handleIncentiveApplication('carPlan')}
+                        disabled={incentiveLoading}
+                        className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:opacity-90 disabled:opacity-50 text-sm font-medium"
+                      >
+                        {incentiveLoading ? 'Applying...' : 'Apply Now'}
+                      </button>
                     ) : (
-                      <div className="inline-block bg-yellow-50 rounded-full px-4 py-2 text-yellow-700 text-sm font-medium">Unlocked — Waiting for Admin Approval</div>
-                    )
-                  ) : (
-                    <div className="inline-block bg-gray-100 rounded-full px-4 py-2 text-gray-600 text-sm">Locked</div>
-                  )}
-                </div>
+                      <div className="text-sm text-gray-500">Need {2 - (teamStats?.directDirectorCount || 0)} more direct Directors</div>
+                    )}
+                  </div>
+                )}
 
-                {/* Car Plan - Director with 2 Directors in downlink */}
-                <div className="border rounded-xl p-5">
-                  <div className="font-semibold">Car Plan</div>
-                  {user && user.rank === 'Director' && teamStats && teamStats.directorCount >= 2 && (
-                    <div className="text-sm text-gray-600 mb-3">Director + 2 Directors in downlink</div>
-                  )}
-                  {user && user.rank === 'Director' && teamStats && teamStats.directorCount >= 2 ? (
-                    user.incentives?.carPlan?.status === 'approved' ? (
-                      <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium">Approved</div>
+                {/* Monthly Salary - Director with 2 direct S.Managers this month */}
+                {user && user.rank === 'Director' && (
+                  <div className="border rounded-xl p-5">
+                    <div className="font-semibold mb-2">Monthly Salary (₹40,000)</div>
+                    <div className="text-sm text-gray-600 mb-3">2 direct S.Managers this month (Monthly)</div>
+                    {userIncentives.find(inc => inc.type === 'monthlySalary' && inc.status === 'approved' && inc.month === new Date().toISOString().slice(0, 7)) ? (
+                      <div className="inline-block bg-green-50 rounded-full px-4 py-2 text-green-700 text-sm font-medium mb-3">Approved for this month ✓</div>
+                    ) : userIncentives.find(inc => inc.type === 'monthlySalary' && inc.status === 'pending' && inc.month === new Date().toISOString().slice(0, 7)) ? (
+                      <div className="inline-block bg-yellow-50 rounded-full px-4 py-2 text-yellow-700 text-sm font-medium mb-3">Pending Approval</div>
+                    ) : teamStats && teamStats.directSManagersThisMonth >= 2 ? (
+                      <button
+                        onClick={() => handleIncentiveApplication('monthlySalary')}
+                        disabled={incentiveLoading}
+                        className="w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:opacity-90 disabled:opacity-50 text-sm font-medium"
+                      >
+                        {incentiveLoading ? 'Applying...' : 'Apply for This Month'}
+                      </button>
                     ) : (
-                      <div className="inline-block bg-yellow-50 rounded-full px-4 py-2 text-yellow-700 text-sm font-medium">Unlocked — Waiting for Admin Approval</div>
-                    )
-                  ) : (
-                    <div className="inline-block bg-gray-100 rounded-full px-4 py-2 text-gray-600 text-sm">Locked</div>
-                  )}
-                </div>
+                      <div className="text-sm text-gray-500">Need {2 - (teamStats?.directSManagersThisMonth || 0)} more direct S.Managers this month</div>
+                    )}
+                  </div>
+                )}
+
+                {/* Show message if no incentives available */}
+                {(!user || (user.rank !== 'G.Manager' && user.rank !== 'Director')) && (
+                  <div className="col-span-full text-center py-8">
+                    <div className="text-gray-500 mb-2">No incentives available for your current rank</div>
+                    <div className="text-sm text-gray-400">
+                      {!user?.rank ? 'Purchase a package to unlock incentives' : 
+                       user.rank === 'Assistant' ? 'Upgrade to Manager or higher to unlock incentives' :
+                       user.rank === 'Manager' ? 'Upgrade to S.Manager or higher to unlock incentives' :
+                       user.rank === 'S.Manager' ? 'Upgrade to D.Manager or higher to unlock incentives' :
+                       user.rank === 'D.Manager' ? 'Upgrade to G.Manager to unlock Umrah Ticket or Director for all incentives' :
+                       'Incentives available at G.Manager and Director ranks'}
+                    </div>
+                  </div>
+                )}
               </div>
+
+              {/* Recent Applications */}
+              {userIncentives.length > 0 && (
+                <div className="mt-6 pt-6 border-t">
+                  <h4 className="font-semibold mb-4">Recent Applications</h4>
+                  <div className="space-y-2">
+                    {userIncentives.slice(0, 5).map((incentive) => (
+                      <div key={incentive._id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <span className="font-medium capitalize">
+                            {incentive.type === 'umrahTicket' ? 'Umrah Ticket' :
+                             incentive.type === 'carPlan' ? 'Car Plan' :
+                             incentive.type === 'monthlySalary' ? `Monthly Salary ${incentive.month}` : incentive.type}
+                          </span>
+                          <div className="text-sm text-gray-600">
+                            Applied: {new Date(incentive.appliedAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          incentive.status === 'approved' ? 'bg-green-100 text-green-700' :
+                          incentive.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'
+                        }`}>
+                          {incentive.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -1411,7 +1598,24 @@ export default function Dashboard() {
                         </div>
                         <div className="p-5">
                           <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-                          <p className="text-gray-800 text-sm mb-3 line-clamp-2">{product.description}</p>
+                          <p className="text-gray-800 text-sm mb-3">{product.description}</p>
+                          
+                          {/* Benefits List */}
+                          <div className="mb-4">
+                            <h4 className="font-medium text-sm text-gray-700 mb-2">Benefits:</h4>
+                            <ul className="text-xs text-gray-600 space-y-1">
+                              {product.benefits?.slice(0, 4).map((benefit, index) => (
+                                <li key={index} className="flex items-start">
+                                  <span className="text-purple-500 mr-1 mt-0.5">•</span>
+                                  <span>{benefit}</span>
+                                </li>
+                              ))}
+                              {product.benefits?.length > 4 && (
+                                <li className="text-purple-600 font-medium">+{product.benefits.length - 4} more benefits</li>
+                              )}
+                            </ul>
+                          </div>
+                          
                           <div className="flex justify-between items-center">
                             <p className="text-lg font-bold text-purple-600">₨{product.price.toLocaleString()}</p>
                             <button 

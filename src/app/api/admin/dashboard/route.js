@@ -5,6 +5,7 @@ import Transaction from '../../../../../models/Transaction';
 import Order from '../../../../../models/Order';
 import Payout from '../../../../../models/Payout';
 import RankApproval from '../../../../../models/RankApproval';
+import Incentive from '../../../../../models/Incentive';
 import { verifyToken } from '../../../../../lib/auth';
 
 export async function GET(request) {
@@ -57,14 +58,10 @@ export async function GET(request) {
       { $group: { _id: '$rank', count: { $sum: 1 } } }
     ]);
 
-    // Pending incentives (users whose incentives are pending)
-    const pendingIncentives = await User.find({
-      $or: [
-        { 'incentives.umrahTicket.status': 'pending' },
-        { 'incentives.fixedSalary.status': 'pending' },
-        { 'incentives.carPlan.status': 'pending' }
-      ]
-    }).select('username phone rank incentives');
+    // Pending incentives (new system)
+    const pendingIncentives = await Incentive.find({ status: 'pending' })
+      .populate('userId', 'username phone rank')
+      .sort({ appliedAt: -1 });
 
     return NextResponse.json({
       pendingApprovals: {

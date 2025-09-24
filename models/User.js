@@ -81,18 +81,8 @@ const UserSchema = new mongoose.Schema({
   hasPendingRank: {
     type: Boolean,
     default: false
-  },
-  incentives: {
-    umrahTicket: {
-      status: { type: String, enum: ['locked', 'pending', 'approved', 'rejected'], default: 'locked' }
-    },
-    fixedSalary: {
-      status: { type: String, enum: ['locked', 'pending', 'approved', 'rejected'], default: 'locked' }
-    },
-    carPlan: {
-      status: { type: String, enum: ['locked', 'pending', 'approved', 'rejected'], default: 'locked' }
-    }
   }
+  // Note: Incentives are now handled by the separate Incentive model
 }, {
   timestamps: true
 });

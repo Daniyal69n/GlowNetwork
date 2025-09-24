@@ -81,9 +81,8 @@ export default function AdminDashboard() {
         });
       } else if (type === 'incentive') {
         endpoint = `/api/admin/incentives`;
-        // id for incentives is a JSON string we built with userId/key/action for convenience
-        const parsed = typeof id === 'string' ? JSON.parse(id) : id;
-        body = JSON.stringify(parsed);
+        // id for incentives is the incentive application ID
+        body = JSON.stringify({ incentiveId: id, action: action });
       } else {
         endpoint = `/api/admin/approve-${type}`;
         body = JSON.stringify({ 
@@ -417,31 +416,54 @@ export default function AdminDashboard() {
               <p className="text-gray-600">No pending incentive approvals.</p>
             ) : (
               <div className="space-y-4">
-                {dashboardData.pendingApprovals.incentives.map((u) => (
-                  <div key={u._id} className="border rounded-lg p-3 md:p-4">
+                {dashboardData.pendingApprovals.incentives.map((incentive) => (
+                  <div key={incentive._id} className="border rounded-lg p-3 md:p-4">
                     <div className="flex flex-col md:flex-row md:justify-between md:items-start">
                       <div className="mb-3 md:mb-0">
-                        <h3 className="font-semibold">{u.username}</h3>
-                        <p className="text-sm text-gray-600">Phone: {u.phone}</p>
-                        <p className="text-sm text-gray-600">Rank: {u.rank || '-'}</p>
-                        <p className="text-sm text-gray-600">Pending: {['umrahTicket','fixedSalary','carPlan'].filter(k => u.incentives?.[k]?.status === 'pending').join(', ')}</p>
+                        <h3 className="font-semibold">{incentive.userId?.username || 'Unknown User'}</h3>
+                        <p className="text-sm text-gray-600">Phone: {incentive.userId?.phone || 'N/A'}</p>
+                        <p className="text-sm text-gray-600">Rank: {incentive.userId?.rank || 'N/A'}</p>
+                        <p className="text-sm text-gray-600">
+                          Incentive: <span className="font-medium capitalize">
+                            {incentive.type === 'umrahTicket' ? 'Umrah Ticket' :
+                             incentive.type === 'carPlan' ? 'Car Plan' :
+                             incentive.type === 'monthlySalary' ? `Monthly Salary (${incentive.month})` : incentive.type}
+                          </span>
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Applied: {new Date(incentive.appliedAt).toLocaleDateString()}
+                        </p>
+                        {incentive.type === 'carPlan' && (
+                          <p className="text-sm text-blue-600">
+                            Direct Directors: {incentive.eligibilityData?.directDirectors || 'N/A'}
+                          </p>
+                        )}
+                        {incentive.type === 'monthlySalary' && (
+                          <p className="text-sm text-purple-600">
+                            Direct S.Managers this month: {incentive.eligibilityData?.directSManagersInMonth || 'N/A'}
+                          </p>
+                        )}
                       </div>
                       <div className="flex flex-col space-y-2">
-                        {['umrahTicket','fixedSalary','carPlan'].map((key) => (
-                          u.incentives?.[key]?.status === 'pending' && (
-                            <div key={key} className="flex items-center space-x-2">
-                              <span className="text-sm capitalize w-28">{key}</span>
-                              <button
-                                onClick={() => handleApproval('incentive', JSON.stringify({ userId: u._id, key, action: 'approved' }))}
-                                className="px-3 py-1 rounded bg-green-100 text-green-700 hover:bg-green-200"
-                              >Approve</button>
-                              <button
-                                onClick={() => handleApproval('incentive', JSON.stringify({ userId: u._id, key, action: 'rejected' }))}
-                                className="px-3 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200"
-                              >Reject</button>
-                            </div>
-                          )
-                        ))}
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleApproval('incentive', incentive._id, 'approved')}
+                            className="px-4 py-2 rounded bg-green-100 text-green-700 hover:bg-green-200 font-medium"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => handleApproval('incentive', incentive._id, 'rejected')}
+                            className="px-4 py-2 rounded bg-red-100 text-red-700 hover:bg-red-200 font-medium"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                        {incentive.type === 'monthlySalary' && (
+                          <div className="text-xs text-gray-500 text-center">
+                            Amount: ₹40,000
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

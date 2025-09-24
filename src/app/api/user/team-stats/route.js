@@ -65,6 +65,18 @@ export async function GET(request) {
       }
     });
     
+    // Calculate direct S.Managers who became S.Manager this month (for monthly salary incentive)
+    const currentMonth = new Date();
+    const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0, 23, 59, 59);
+    
+    const directSManagersThisMonth = await User.countDocuments({
+      referredBy: user.referralCode,
+      rank: 'S.Manager',
+      packagePurchased: { $exists: true, $ne: null },
+      updatedAt: { $gte: startOfMonth, $lte: endOfMonth }
+    });
+    
     return NextResponse.json({
       directReferrals: directReferrals.length,
       teamSize: teamStats.totalMembers,
@@ -83,7 +95,9 @@ export async function GET(request) {
       directSManagerCount: directStats.sManagerCount,
       directDManagerCount: directStats.dManagerCount,
       directGManagerCount: directStats.gManagerCount,
-      directDirectorCount: directStats.directorCount
+      directDirectorCount: directStats.directorCount,
+      // For incentives
+      directSManagersThisMonth: directSManagersThisMonth
     });
 
   } catch (error) {

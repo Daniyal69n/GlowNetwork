@@ -14,6 +14,11 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Glow Network - MLM Platform",
   description: "Network Marketing Platform with Multi-Level Marketing System",
+  icons: {
+    icon: '/glow-network-logo.png',
+    shortcut: '/glow-network-logo.png',
+    apple: '/glow-network-logo.png',
+  },
 };
 
 export default function RootLayout({ children }) {
