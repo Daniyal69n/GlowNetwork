@@ -32,7 +32,7 @@ export default function Dashboard() {
       name: 'Whitening Cream',
       description: 'Give your skin a natural glow with our premium whitening cream.',
       price: 4500,
-      image: '/products/product1.png',
+      image: '/products/product1.webp',
       benefits: [
         'Give your skin a natural Glow',
         'Fair Color',
@@ -47,7 +47,7 @@ export default function Dashboard() {
       name: 'Creamy Face Wash',
       description: 'Gentle face wash that smoothes and repairs your skin.',
       price: 3500,
-      image: '/products/product2.png',
+      image: '/products/product2.webp',
       benefits: [
         'Smoothes & repair the skin',
         'Lighten skin',
@@ -61,7 +61,7 @@ export default function Dashboard() {
       name: 'Hair Fall Shampoo',
       description: 'Professional hair care shampoo for healthy, strong hair.',
       price: 4500,
-      image: '/products/product3.png',
+      image: '/products/product3.webp',
       benefits: [
         'For Hair Growth',
         'For silky hair',
@@ -77,7 +77,7 @@ export default function Dashboard() {
       name: 'Creamy Sunblock',
       description: 'Protective sunblock that soothes and repairs your skin.',
       price: 3500,
-      image: '/products/product4.png',
+      image: '/products/product4.webp',
       benefits: [
         'Soothes & Repairs the skin',
         'Lighten skin',
@@ -91,7 +91,7 @@ export default function Dashboard() {
       name: 'Anti Acne Face Wash',
       description: 'Specialized face wash for acne-prone skin.',
       price: 4000,
-      image: '/products/product5.png',
+      image: '/products/product5.webp',
       benefits: [
         'Soothes & Repairs the skin',
         'Lighten skin',
@@ -105,7 +105,7 @@ export default function Dashboard() {
       name: 'Vitamin C Serum',
       description: 'Powerful vitamin C serum for instant skin brightening.',
       price: 4000,
-      image: '/products/product6.png',
+      image: '/products/product6.webp',
       benefits: [
         'Skin Instant Bright',
         'Reduce pigmentation',
@@ -122,7 +122,7 @@ export default function Dashboard() {
       name: 'Anti Acne Serum',
       description: 'Advanced serum that tightens skin and reduces acne.',
       price: 4500,
-      image: '/products/product7.png',
+      image: '/products/product7.webp',
       benefits: [
         'Tightens Skin',
         'Remove Dark circles',
@@ -137,7 +137,7 @@ export default function Dashboard() {
       name: 'Herbal Hair Shampoo',
       description: 'Natural herbal shampoo for comprehensive hair care.',
       price: 4000,
-      image: '/products/product8.png',
+      image: '/products/product8.webp',
       benefits: [
         'For Hair Growth',
         'For silky hair',
@@ -153,7 +153,7 @@ export default function Dashboard() {
       name: 'Skin Polish',
       description: 'Gentle skin polish for a smoother, glowing complexion.',
       price: 4500,
-      image: '/products/product9.png',
+      image: '/products/product9.webp',
       benefits: [
         'Gently removes dead skin cells',
         'Tighten large open pores',
