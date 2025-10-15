@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import WhatsAppContact from "./components/WhatsAppContact.jsx";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,8 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        {/* Global WhatsApp floating contact: replace with your info */}
+        <WhatsAppContact phoneNumber="+923278805684" displayName="Sahar Maqsood" />
       </body>
     </html>
   );
