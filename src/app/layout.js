@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
       >
         {children}
         {/* Global WhatsApp floating contact: replace with your info */}
-        <WhatsAppContact phoneNumber="+923278805684" displayName="Sahar Maqsood" />
+        <WhatsAppContact phoneNumber="+923069207761" displayName="Sahar Maqsood" />
       </body>
     </html>
   );
