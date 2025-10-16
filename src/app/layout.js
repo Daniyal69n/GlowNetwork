@@ -34,7 +34,6 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        {/* Global WhatsApp floating contact: replace with your info */}
         <WhatsAppContact phoneNumber="+923069207761" displayName="Sahar Maqsood" />
       </body>
     </html>
