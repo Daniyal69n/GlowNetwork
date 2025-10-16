@@ -1,11 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-<<<<<<< HEAD
 import { FiUsers, FiPackage, FiShoppingBag, FiDollarSign, FiLogOut, FiCheck, FiX, FiMenu, FiEye, FiUserCheck } from 'react-icons/fi';
-=======
-import { FiUsers, FiPackage, FiShoppingBag, FiDollarSign, FiLogOut, FiCheck, FiX, FiMenu } from 'react-icons/fi';
->>>>>>> 224c81a5ca346fde23e85b03bd74565efe746b8e
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -14,15 +10,12 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-<<<<<<< HEAD
   const [allUsers, setAllUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [resetPasswordResult, setResetPasswordResult] = useState(null);
-=======
->>>>>>> 224c81a5ca346fde23e85b03bd74565efe746b8e
   // Products are now hardcoded in the user dashboard
   const router = useRouter();
 
@@ -30,7 +23,7 @@ export default function AdminDashboard() {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     
-    if (!token || !userData) {
+    if (!token || !userData) {  
       router.push('/');
       return;
     }
@@ -52,7 +45,6 @@ export default function AdminDashboard() {
     return () => clearInterval(pollingInterval); // Clean up on unmount
   }, [router]);
 
-<<<<<<< HEAD
   // Fetch users when users tab is selected
   useEffect(() => {
     if (activeTab === 'users') {
@@ -60,8 +52,6 @@ export default function AdminDashboard() {
     }
   }, [activeTab]);
 
-=======
->>>>>>> 224c81a5ca346fde23e85b03bd74565efe746b8e
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -79,7 +69,6 @@ export default function AdminDashboard() {
     }
   };
 
-<<<<<<< HEAD
   const fetchAllUsers = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -151,9 +140,6 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
-
-=======
->>>>>>> 224c81a5ca346fde23e85b03bd74565efe746b8e
   // Products are now hardcoded in the user dashboard
 
   const handleApproval = async (type, id, action) => {
@@ -317,10 +303,7 @@ export default function AdminDashboard() {
         <div className="hidden md:flex space-x-1 mb-8">
           {[
             { id: 'overview', label: 'Overview', icon: FiUsers },
-<<<<<<< HEAD
             { id: 'users', label: 'All Users', icon: FiUserCheck },
-=======
->>>>>>> 224c81a5ca346fde23e85b03bd74565efe746b8e
             { id: 'packages', label: 'Package Approvals', icon: FiPackage },
             { id: 'orders', label: 'Order Approvals', icon: FiShoppingBag },
             { id: 'payouts', label: 'Payout Approvals', icon: FiDollarSign },
@@ -342,16 +325,10 @@ export default function AdminDashboard() {
         </div>
         
         {/* Navigation Tabs - Mobile */}
-<<<<<<< HEAD
         <div className="md:hidden grid grid-cols-3 gap-2 mb-8">
           {[
             { id: 'overview', label: 'Overview', icon: FiUsers },
             { id: 'users', label: 'Users', icon: FiUserCheck },
-=======
-        <div className="md:hidden grid grid-cols-2 gap-2 mb-8">
-          {[
-            { id: 'overview', label: 'Overview', icon: FiUsers },
->>>>>>> 224c81a5ca346fde23e85b03bd74565efe746b8e
             { id: 'packages', label: 'Packages', icon: FiPackage },
             { id: 'orders', label: 'Orders', icon: FiShoppingBag },
             { id: 'payouts', label: 'Payouts', icon: FiDollarSign },
@@ -384,7 +361,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Content based on active tab */}
-<<<<<<< HEAD
+
         {activeTab === 'users' && (
           <div className="bg-white rounded-lg shadow p-4 md:p-6">
             <div className="flex justify-between items-center mb-4 md:mb-6">
@@ -456,8 +433,8 @@ export default function AdminDashboard() {
           </div>
         )}
 
-=======
->>>>>>> 224c81a5ca346fde23e85b03bd74565efe746b8e
+
+
         {activeTab === 'overview' && (
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8">
             <div className="bg-white rounded-lg shadow p-4 md:p-6">
@@ -811,7 +788,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Products tab removed - products are now hardcoded in user dashboard */}
-<<<<<<< HEAD
+
         
         {/* User Details Modal */}
         {showUserModal && selectedUser && (
@@ -963,8 +940,8 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
-=======
->>>>>>> 224c81a5ca346fde23e85b03bd74565efe746b8e
+
+
       </div>
     </div>
   );
